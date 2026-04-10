@@ -314,7 +314,7 @@ Function UpdateEvents()
 						EndIf
 					EndIf
 					
-					If ((e\EventState Mod 600 > 300) And ((e\EventState+FPSfactor) Mod 600 < 300)) Then
+					If ((e\EventState Mod 600 > 300) And ((e\EventState+PrevFPSFactor) Mod 600 < 300)) Then
 						i = Floor((e\EventState-5000)/600)+1
 						
 						If i = 0 Then PlaySound_Strict(LoadTempSound("SFX\Room\Intro\PA\scripted\scripted6.ogg"))
