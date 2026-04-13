@@ -182,10 +182,10 @@ Function FreeSound_Strict(sndHandle%)
 	Local snd.Sound = Object.Sound(sndHandle)
 	If snd <> Null Then
 		If snd\internalHandle <> 0 Then
+			RemoveQueuedSubtitle(snd\internalHandle)
 			FreeSound snd\internalHandle
 			snd\internalHandle = 0
 		EndIf
-		RemoveQueuedSubtitle(snd\internalHandle)
 		Delete snd
 	EndIf
 End Function
