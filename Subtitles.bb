@@ -238,6 +238,8 @@ Function CreateSubtitleToken(entry.SubtitleEntry, soundPathGroup$, tokenType)
 				t\entry = entry
 
 				Insert t Before First SubtitleToken
+
+				t\fromFile = 1 Shl tokenType
 			Else
 				; Append entry to existing linked list
 				Local e.SubtitleEntry = t\entry
@@ -246,13 +248,13 @@ Function CreateSubtitleToken(entry.SubtitleEntry, soundPathGroup$, tokenType)
 				Wend
 
 				e\nextEntry = entry
+
+				t\fromFile = t\fromFile Or (1 Shl tokenType)
+
+				; All tokens in a group share the same entry. This means that appending to the first one is sufficient.
+				; Appending to the others would actually create a loop in the linked list.
+				Exit
 			EndIf
-
-			t\fromFile = t\fromFile Or (1 Shl tokenType)
-
-			; All tokens in a group share the same entry. This means that appending to the first one is sufficient.
-			; Appending to the others would actually create a loop in the linked list.
-			Exit
 		EndIf
 
 		offset = toChar+1
