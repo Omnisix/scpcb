@@ -8951,6 +8951,7 @@ Function InitNewGame()
 	If SelectedMap = -1 Then
 		CreateMap(50, 19)
 	Else
+		UsedConsole = True
 		LoadMap(SavedMapsPath(SelectedMap), 50, 19)
 	EndIf
 	DrawLoading(70)
