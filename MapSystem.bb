@@ -250,14 +250,21 @@ Function LoadRMesh(file$,rt.RoomTemplates)
 	
 	;trigger boxes
 	If hasTriggerBox
+		Local lastTriggerbox.TempTriggerbox
+
+		Local triggerboxCount% = ReadInt(f)
 		DebugLog "TriggerBoxEnable"
-		rt\TempTriggerboxAmount = ReadInt(f)
-		For tb = 0 To rt\TempTriggerboxAmount-1
-			rt\TempTriggerbox[tb] = CreateMesh(obj)
-			HideEntity(rt\TempTriggerbox[tb])
+		For k = 1 To triggerboxCount
+			Local tb.TempTriggerbox = New TempTriggerbox
+			
+			tb\Obj = CreateMesh(obj)
+			EntityAlpha(tb\Obj, 0.0)
+			EntityColor(tb\Obj, 255,255,0)
+			HideEntity(tb\Obj)
+
 			count = ReadInt(f)
 			For i%=1 To count
-				surf=CreateSurface(rt\TempTriggerbox[tb])
+				surf=CreateSurface(tb\Obj)
 				count2=ReadInt(f)
 				For j%=1 To count2
 					x=ReadFloat(f) : y=ReadFloat(f) : z=ReadFloat(f)
@@ -270,7 +277,14 @@ Function LoadRMesh(file$,rt.RoomTemplates)
 					AddTriangle(surf,temp1i,temp3i,temp2i)
 				Next
 			Next
-			rt\TempTriggerboxName[tb] = ReadString(f)
+			tb\Name = ReadString(f)
+
+			If lastTriggerbox = Null Then
+				rt\FirstTempTriggerbox = tb
+			Else
+				lastTriggerbox\Successor = tb
+			EndIf
+			lastTriggerbox = tb
 		Next
 	EndIf
 	
@@ -448,11 +462,10 @@ Function LoadRMesh(file$,rt.RoomTemplates)
 
 				If lastItem = Null Then
 					rt\FirstTempItem = it
-					lastItem = it
 				Else
 					lastItem\Successor = it
-					lastItem = it
 				EndIf
+				lastItem = it
 
 			Case "door"
 				d.TempDoors = New TempDoors
@@ -488,11 +501,10 @@ Function LoadRMesh(file$,rt.RoomTemplates)
 
 				If lastDoor = Null Then
 					rt\FirstTempDoor = d
-					lastDoor = d
 				Else
 					lastDoor\Successor = d
-					lastDoor = d
 				EndIf
+				lastDoor = d
 		End Select
 	Next
 		
@@ -1561,9 +1573,7 @@ Type RoomTemplates
 
 	Field R%, G%, B%
 	
-	Field TempTriggerboxAmount
-	Field TempTriggerbox[128]
-	Field TempTriggerboxName$[128]
+	Field FirstTempTriggerbox.TempTriggerbox
 
 	Field FirstTempItem.TempItems
 
@@ -1576,6 +1586,12 @@ Type RoomTemplates
 	Field MinX#, MinY#, MinZ#
 	Field MaxX#, MaxY#, MaxZ#
 End Type 	
+
+Type TempTriggerbox
+	Field Obj%
+	Field Name$
+	Field Successor.TempTriggerbox
+End Type
 
 Type TempItems
 	Field Name$
@@ -1802,9 +1818,7 @@ Type Rooms
 	Field LightSprites2%[MaxRoomLights]
 	Field LightHidden%[MaxRoomLights]
 	Field LightFlicker%[MaxRoomLights]
-	Field TriggerboxAmount
-	Field Triggerbox[128]
-	Field TriggerboxName$[128]
+	Field FirstTriggerbox.Triggerbox
 	Field MaxWayPointY#
 	Field LightR#[MaxRoomLights],LightG#[MaxRoomLights],LightB#[MaxRoomLights]
 	Field LightCone%[MaxRoomLights]
@@ -1814,6 +1828,12 @@ Type Rooms
 	Field MinX#, MinY#, MinZ#
 	Field MaxX#, MaxY#, MaxZ#
 End Type 
+
+Type Triggerbox
+	Field Obj%
+	Field Name$
+	Field Successor.Triggerbox
+End Type
 
 Const gridsz%=19 ;Same size as the main map itself (better for the map creator)
 Type Grids
@@ -5501,16 +5521,23 @@ Function FillRoom(r.Rooms)
 		EndIf
 	Next
 	
-	If r\RoomTemplate\TempTriggerboxAmount > 0
-		r\TriggerboxAmount = r\RoomTemplate\TempTriggerboxAmount
-		For i = 0 To r\TriggerboxAmount-1
-			r\Triggerbox[i] = CopyEntity(r\RoomTemplate\TempTriggerbox[i],r\obj)
-			r\TriggerboxName[i] = r\RoomTemplate\TempTriggerboxName[i]
-			DebugLog "Triggerbox found: "+i
-			DebugLog "Triggerbox "+i+" name: "+r\TriggerboxName[i]
-		Next
-	EndIf
-	
+	Local tempTb.TempTriggerbox = r\RoomTemplate\FirstTempTriggerbox
+	Local lastTb.Triggerbox
+	While tempTb <> Null
+		Local tb.Triggerbox = New Triggerbox
+		tb\Obj = CopyEntity(tempTb\Obj, r\obj)
+		tb\Name = tempTb\Name
+		If lastTb = Null Then
+			r\FirstTriggerbox = tb
+		Else
+			lastTb\Successor = tb
+		EndIf
+		lastTb = tb
+		DebugLog "Triggerbox "+i+" name: "+tb\Name
+
+		tempTb = tempTb\Successor
+	Wend
+
 	For i = 0 To MaxRoomEmitters-1
 		If r\RoomTemplate\TempSoundEmitter[i]<>0 Then
 			r\SoundEmitterObj[i]=CreatePivot(r\obj)
@@ -5665,21 +5692,6 @@ Function UpdateRooms()
 					Exit
 				EndIf
 			Next
-			If DebugHUD
-				If r\TriggerboxAmount>0
-					For i=0 To r\TriggerboxAmount-1
-						EntityColor r\Triggerbox[i],255,255,0
-						EntityAlpha r\Triggerbox[i],0.2
-					Next
-				EndIf
-			Else
-				If r\TriggerboxAmount>0
-					For i=0 To r\TriggerboxAmount-1
-						EntityColor r\Triggerbox[i],255,255,255
-						EntityAlpha r\Triggerbox[i],0.0
-					Next
-				EndIf
- 			EndIf
 		EndIf
 	Next
 	

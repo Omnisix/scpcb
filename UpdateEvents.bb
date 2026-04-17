@@ -151,7 +151,7 @@ Function UpdateEvents()
 					
 					If e\room\NPC[0] <> Null Then AnimateNPC(e\room\NPC[0], 249, 286, 0.4, False)
 					
-					CurrTrigger = CheckTriggers()
+					CurrTrigger = CheckTriggers(PlayerRoom, EntityX(Collider), EntityY(Collider), EntityZ(Collider))
 					
 					If (CurrTrigger = "173scene_timer") Then
 						e\EventState = e\EventState+FPSfactor
@@ -4851,7 +4851,7 @@ Function UpdateEvents()
 							e\room\NPC[0]\IgnorePlayer = False
 							e\room\NPC[2]\IgnorePlayer = False
 							
-							CurrTrigger$ = CheckTriggers()
+							CurrTrigger$ = CheckTriggers(PlayerRoom, EntityX(Collider), EntityY(Collider), EntityZ(Collider))
 							
 							Select CurrTrigger$
 								Case "939-1_fix"

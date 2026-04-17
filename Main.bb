@@ -1334,8 +1334,24 @@ Function UpdateConsole()
 					
 					If DebugHUD Then
 						CreateConsoleMsg("Debug Mode On")
+
+						For r.Rooms = Each Rooms
+							Local tb.Triggerbox = r\FirstTriggerbox
+							While tb <> Null
+								EntityAlpha(tb\Obj, 0.2)
+								tb = tb\Successor
+							Wend
+						Next
 					Else
 						CreateConsoleMsg("Debug Mode Off")
+					
+						For r.Rooms = Each Rooms
+							tb.Triggerbox = r\FirstTriggerbox
+							While tb <> Null
+								EntityAlpha(tb\Obj, 0.0)
+								tb = tb\Successor
+							Wend
+						Next
 					EndIf
 					;[End Block]
 				Case "stopsound", "stfu"
@@ -12140,39 +12156,28 @@ Function UpdateDeafPlayer()
 	
 End Function
 
-Function CheckTriggers$()
+Function CheckTriggers$(r.Rooms, x#, y#, z#)
 	Local i%,sx#,sy#,sz#
 	Local inside% = -1
-	
-	If PlayerRoom\TriggerboxAmount = 0
-		Return ""
-	Else
-		For i = 0 To PlayerRoom\TriggerboxAmount-1
-			EntityAlpha PlayerRoom\Triggerbox[i],1.0
-			sx# = EntityScaleX(PlayerRoom\Triggerbox[i], 1)
-			sy# = Max(EntityScaleY(PlayerRoom\Triggerbox[i], 1), 0.001)
-			sz# = EntityScaleZ(PlayerRoom\Triggerbox[i], 1)
-			GetMeshExtents(PlayerRoom\Triggerbox[i])
-			If DebugHUD
-				EntityColor PlayerRoom\Triggerbox[i],255,255,0
-				EntityAlpha PlayerRoom\Triggerbox[i],0.2
-			Else
-				EntityColor PlayerRoom\Triggerbox[i],255,255,255
-				EntityAlpha PlayerRoom\Triggerbox[i],0.0
- 			EndIf
-			If EntityX(Collider)>((sx#*Mesh_MinX)+PlayerRoom\x) And EntityX(Collider)<((sx#*Mesh_MaxX)+PlayerRoom\x)
-				If EntityY(Collider)>((sy#*Mesh_MinY)+PlayerRoom\y) And EntityY(Collider)<((sy#*Mesh_MaxY)+PlayerRoom\y)
-					If EntityZ(Collider)>((sz#*Mesh_MinZ)+PlayerRoom\z) And EntityZ(Collider)<((sz#*Mesh_MaxZ)+PlayerRoom\z)
-						inside% = i%
-						Exit
-					EndIf
+
+	Local tb.Triggerbox = r\FirstTriggerbox
+	While tb <> Null
+		sx# = EntityScaleX(tb\Obj, 1)
+		sy# = Max(EntityScaleY(tb\Obj, 1), 0.001)
+		sz# = EntityScaleZ(tb\Obj, 1)
+		GetMeshExtents(tb\Obj)
+		If x>((sx#*Mesh_MinX)+r\x) And x<((sx#*Mesh_MaxX)+r\x)
+			If y>((sy#*Mesh_MinY)+r\y) And y<((sy#*Mesh_MaxY)+r\y)
+				If z>((sz#*Mesh_MinZ)+r\z) And z<((sz#*Mesh_MaxZ)+r\z)
+					Return tb\Name
 				EndIf
 			EndIf
-		Next
-		
-		If inside% > -1 Then Return PlayerRoom\TriggerboxName[inside%]
-	EndIf
-	
+		EndIf
+
+		tb = tb\Successor
+	Wend
+
+	Return ""	
 End Function
 
 Function ScaledMouseX%()
