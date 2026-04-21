@@ -1458,6 +1458,8 @@ Function UpdateEvents()
 					EndIf
 					
 					If e\EventState3=0 Then
+						If e\room\Objects[1]<>0 Then FreeEntity(e\room\Objects[1]) : e\room\Objects[1]=0
+
 						If Rand(2)=1 Then
 							GiveAchievement(Achv1048)
 							e\room\Objects[1]=LoadAnimMesh_Strict("GFX\npcs\scp-1048.b3d")
@@ -6722,6 +6724,8 @@ Function UpdateEvents()
 				If e <> Null Then
 					If PlayerRoom = e\room Then
 						If e\EventState = 0 Then
+							If e\room\Objects[7]<>0 Then FreeEntity(e\room\Objects[7]) : e\room\Objects[7]=0
+
 							e\room\Objects[7]=LoadAnimMesh_Strict("GFX\npcs\scp-1048.b3d")
 							ScaleEntity e\room\Objects[7], 0.05,0.05,0.05
 							
