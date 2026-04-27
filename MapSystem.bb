@@ -479,6 +479,11 @@ Function LoadRMesh(file$,rt.RoomTemplates)
 				d\Z = ReadFloat(f) * RoomScale
 
 				d\Dir = ReadInt(f)
+				If version => 0 Then
+					d\Index = ReadInt(f)
+				Else
+					d\Index = -1
+				EndIf
 				d\KeyCard = ReadInt(f)
 				d\Code = ReadString(f)
 				d\Angle = ReadFloat(f)
@@ -1610,6 +1615,7 @@ End Type
 
 Type TempDoors
 	Field Dir%
+	Field Index%
 	Field KeyCard%
 	Field Code$
 	Field X#, Y#, Z#
@@ -1781,6 +1787,7 @@ Global PrevSecondaryLightOn# = True
 Global RemoteDoorOn = True
 Global Contained106 = False
 
+Const ROOM_DOORS_COUNT% = 9
 Type Rooms
 	Field zone%
 	
@@ -1809,7 +1816,7 @@ Type Rooms
 	
 	Field Objects%[MaxRoomObjects]
 	Field Levers%[11]
-	Field RoomDoors.Doors[8]
+	Field RoomDoors.Doors[ROOM_DOORS_COUNT]
 	Field NPC.NPCs[12]
 	Field grid.Grids
 	
@@ -5620,6 +5627,7 @@ Function FillRoom(r.Rooms)
 	Local dt.TempDoors = r\RoomTemplate\FirstTempDoor
 	While dt <> Null
 		Local door.Doors = CreateDoor(r\zone, r\x + dt\X, r\y + dt\Y, r\z + dt\Z, dt\Angle, r, dt\SpawnOpen, dt\Dir, dt\KeyCard, dt\Code)
+		If dt\Index => 0 And dt\Index < ROOM_DOORS_COUNT Then r\RoomDoors[dt\Index] = door
 		If Not dt\AllowRemoteControl Then
 			door\AutoClose = False
 		EndIf
