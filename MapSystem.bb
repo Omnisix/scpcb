@@ -262,7 +262,7 @@ Function LoadRMesh(file$,rt.RoomTemplates)
 			Local tb.TempTriggerboxes = New TempTriggerboxes
 			
 			tb\Obj = CreateMesh(obj)
-			EntityAlpha(tb\Obj, 0.0)
+			EntityAlpha(tb\Obj, 0.2)
 			EntityColor(tb\Obj, 255,255,0)
 			HideEntity(tb\Obj)
 
@@ -5586,6 +5586,7 @@ Function FillRoom(r.Rooms)
 	While tempTb <> Null
 		Local tb.Triggerboxes = New Triggerboxes
 		tb\Obj = CopyEntity(tempTb\Obj, r\obj)
+		HideEntity(tb\Obj)
 		tb\Name = tempTb\Name
 		If lastTb = Null Then
 			r\FirstTriggerbox = tb

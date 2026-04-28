@@ -1350,7 +1350,7 @@ Function UpdateConsole()
 						For r.Rooms = Each Rooms
 							Local tb.Triggerboxes = r\FirstTriggerbox
 							While tb <> Null
-								EntityAlpha(tb\Obj, 0.2)
+								ShowEntity(tb\Obj)
 								tb = tb\Successor
 							Wend
 						Next
@@ -1360,7 +1360,7 @@ Function UpdateConsole()
 						For r.Rooms = Each Rooms
 							tb.Triggerboxes = r\FirstTriggerbox
 							While tb <> Null
-								EntityAlpha(tb\Obj, 0.0)
+								HideEntity(tb\Obj)
 								tb = tb\Successor
 							Wend
 						Next
