@@ -378,7 +378,7 @@ Function UpdateMainMenu()
 				
 				If SelectedDifficulty\customizable Then
 					SelectedDifficulty\permaDeath =  DrawTick(x + 160 * MenuScale, y + 165 * MenuScale, SelectedDifficulty\permaDeath)
-					Text(x + 200 * MenuScale, y + 165 * MenuScale, I_Loc\Difficulty_Permadeath)
+					Text(x + 190 * MenuScale, y + 170 * MenuScale, I_Loc\Difficulty_Permadeath)
 					
 					If DrawTick(x + 160 * MenuScale, y + 195 * MenuScale, SelectedDifficulty\saveType = SAVEANYWHERE And (Not SelectedDifficulty\permaDeath)) Then 
 						SelectedDifficulty\saveType = SAVEANYWHERE
@@ -387,10 +387,10 @@ Function UpdateMainMenu()
 						SelectedDifficulty\saveType = SAVEONSCREENS
 					EndIf
 					
-					Text(x + 200 * MenuScale, y + 195 * MenuScale, I_Loc\Difficulty_Saveanywhere)	
+					Text(x + 190 * MenuScale, y + 200 * MenuScale, I_Loc\Difficulty_Saveanywhere)	
 					
 					SelectedDifficulty\aggressiveNPCs =  DrawTick(x + 160 * MenuScale, y + 225 * MenuScale, SelectedDifficulty\aggressiveNPCs)
-					Text(x + 200 * MenuScale, y + 225 * MenuScale, I_Loc\Difficulty_Aggressivenpcs)
+					Text(x + 190 * MenuScale, y + 230 * MenuScale, I_Loc\Difficulty_Aggressivenpcs)
 					
 					;Other factor's difficulty
 					Color 255,255,255
@@ -408,11 +408,11 @@ Function UpdateMainMenu()
 					Color 255,255,255
 					Select SelectedDifficulty\otherFactors
 						Case EASY
-							Text(x + 200 * MenuScale, y + 255 * MenuScale, Format(I_Loc\Difficulty_Other, I_Loc\Difficulty_OtherEasy))
+							Text(x + 190 * MenuScale, y + 260 * MenuScale, Format(I_Loc\Difficulty_Other, I_Loc\Difficulty_OtherEasy))
 						Case NORMAL
-							Text(x + 200 * MenuScale, y + 255 * MenuScale, Format(I_Loc\Difficulty_Other, I_Loc\Difficulty_OtherNormal))
+							Text(x + 190 * MenuScale, y + 260 * MenuScale, Format(I_Loc\Difficulty_Other, I_Loc\Difficulty_OtherNormal))
 						Case HARD
-							Text(x + 200 * MenuScale, y + 255 * MenuScale, Format(I_Loc\Difficulty_Other, I_Loc\Difficulty_OtherHard))
+							Text(x + 190 * MenuScale, y + 260 * MenuScale, Format(I_Loc\Difficulty_Other, I_Loc\Difficulty_OtherHard))
 					End Select
 				Else
 					RowText(SelectedDifficulty\description, x+160*MenuScale, y+165*MenuScale, (410-20)*MenuScale, 140*MenuScale)					
