@@ -12148,6 +12148,7 @@ Function CheckForPlayerInFacility()
 End Function
 
 Function IsItemGoodFor1162(itt.ItemTemplates)
+	If itt\group = "misc" Return True
 	If itt\group = "paper" Then
 		;if the item is a paper, only allow spawning it if the name contains the word "note" or "log"
 		;(because those are items created recently, which D-9341 has most likely never seen)
@@ -12156,7 +12157,7 @@ Function IsItemGoodFor1162(itt.ItemTemplates)
 	Select itt\name
 		Case "key1", "key2", "key3"
 			Return True
-		Case "misc", "scp420j", "cigarette"
+		Case "scp420j", "cigarette"
 			Return True
 		Case "vest", "finevest","gasmask"
 			Return True
