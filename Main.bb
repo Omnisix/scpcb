@@ -529,7 +529,11 @@ Function UpdateConsole()
 		For cm.ConsoleMsg = Each ConsoleMsg
 			consoleHeight = consoleHeight + 15*MenuScale
 		Next
-		scrollbarHeight = (Float(height)/Float(consoleHeight))*height
+		If consoleHeight = 0 Then
+			scrollbarHeight = height
+		Else
+			scrollbarHeight = (Float(height)/Float(consoleHeight))*height
+		EndIf
 		If scrollbarHeight>height Then scrollbarHeight = height
 		If consoleHeight<height Then consoleHeight = height
 		
@@ -1767,6 +1771,8 @@ Function UpdateConsole()
 					EndIf
 					If ShowMap% Then CreateConsoleMsg("TYPE " + Chr(34) + "help showmap" + Chr(34) + " FOR A LIST OF ROOM COLORS")
 					;[End Block]
+				Case "clear", "cls"
+					Delete Each ConsoleMsg
 				Case "mav"
 					RuntimeErrorExt("Violation Access Memory")
 				Case "jorge"
