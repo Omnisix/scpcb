@@ -7598,10 +7598,10 @@ End Function
 Function DrawTimer()
 	SetFont(Font2)
 	Local durText$ = FormatDuration(PlayTime)
-	Local x% = HUDEndX - StringWidth(durText) - 24 * HUDScale
-	Local y% = HUDStartY + 24 * HUDScale
+	Local x% = HUDEndX - StringWidth(durText) - 24 * MenuScale
+	Local y% = HUDStartY + 24 * MenuScale
 	Color 0, 0, 0
-	Text(x + 3 * HUDScale, y + 3 * HUDScale, durText)
+	Text(x + 3 * MenuScale, y + 3 * MenuScale, durText)
 	If UsedConsole Then
 		Color 150, 150, 150
 	Else If First ActiveMods <> Null Then
