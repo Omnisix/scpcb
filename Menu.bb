@@ -1045,10 +1045,10 @@ Function UpdateMainMenu()
 					Text(x + 20 * MenuScale, y, I_Loc\OptionName_Framelimit)
 					Color 255,255,255
 					If DrawTick(x + 310 * MenuScale, y, CurrFrameLimit > 0.0) Then
-						If CurrFrameLimit = 0 Then CurrFrameLimit = (60-20)/280.0
-						CurrFrameLimit# = (SlideBar(x + 310*MenuScale, y+30*MenuScale, 150*MenuScale, CurrFrameLimit#*100.0, 1)/100.0)
-						CurrFrameLimit# = Max(CurrFrameLimit, 0.001)
-						Framelimit% = 20+(CurrFrameLimit*280.0)
+						If CurrFrameLimit = 0 Then CurrFrameLimit = (60-17)/100.0
+						CurrFrameLimit# = (SlideBar(x + 310*MenuScale, y+30*MenuScale, 150*MenuScale, CurrFrameLimit#*99.0, 1)/99.0)
+						CurrFrameLimit# = Max(CurrFrameLimit, 0.01)
+						Framelimit% = 17+(CurrFrameLimit*280.0)
 						Color 255,255,0
 						Text(x + 25 * MenuScale, y + 25 * MenuScale, Format(I_Loc\OptionName_FramelimitFps, Framelimit%))
 						If (MouseOn(x+310*MenuScale,y+30*MenuScale,150*MenuScale+14,20) And OnSliderID=0) Lor OnSliderID=1
