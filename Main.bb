@@ -5328,7 +5328,7 @@ Function DrawGUI()
 		KeypadMSG = ""
 	EndIf
 	
-	If KeyHit(1) And EndingTimer=0 And (Not Using294) Then
+	If KeyHit(1) And EndingTimer=0 And SelectedEnding="" And (Not Using294) Then
 		If (MenuOpen Or InvOpen) And OptionsMenu <> 0 Then SaveOptionsINI()
 		MenuOpen = (Not MenuOpen)
 		UpdateMenuState()
@@ -7651,7 +7651,7 @@ Function DrawMenu()
 	Local x%, y%, width%, height%
 	Local steamOverlayActive = SteamActive And Steam_GetOverlayState()
 	If api_GetFocus() = 0 Lor steamOverlayActive Then ;Game is out of focus -> pause the game
-		If (Not Using294) Then
+		If (Not Using294) And EndingTimer=0 And SelectedEnding="" Then
 			MenuOpen = True
 			UpdateMenuState()
 		EndIf
