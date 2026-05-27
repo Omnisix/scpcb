@@ -123,8 +123,8 @@ Function SaveGame(file$)
 	WriteByte f, SoundTransmission
 	WriteByte f, Contained106
 	
-	For i = 0 To MAXACHIEVEMENTS-1
-		WriteByte f, Achievements(i)
+	For achv.Achievements = Each Achievements
+		WriteByte f, achv\Unlocked
 	Next
 	WriteInt f, RefinedItems
 	
@@ -606,8 +606,8 @@ Function LoadGame(file$)
 	SoundTransmission = ReadByte(f)	
 	Contained106 = ReadByte(f)	
 	
-	For i = 0 To MAXACHIEVEMENTS-1
-		Achievements(i)=ReadByte(f)
+	For achv.Achievements = Each Achievements
+		achv\Unlocked = ReadByte(f)
 	Next
 	RefinedItems = ReadInt(f)
 	
@@ -1456,8 +1456,8 @@ Function LoadGameQuick(file$)
 	SoundTransmission = ReadByte(f)	
 	Contained106 = ReadByte(f)	
 	
-	For i = 0 To MAXACHIEVEMENTS-1
-		Achievements(i)=ReadByte(f)
+	For achv.Achievements = Each Achievements
+		achv\Unlocked = ReadByte(f)
 	Next
 	RefinedItems = ReadInt(f)
 	

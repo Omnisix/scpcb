@@ -6987,7 +6987,7 @@ Function UpdateEvents()
 			Case "008"
 				;[Block]
 				If PlayerRoom = e\room Then	
-					GiveAchievement(Achv008)=True
+					GiveAchievement(Achv008)
 					;container open
 					If e\EventState = 0 Then
 						If Curr173\Idle<2 And EntityDistance(Curr173\Collider,Collider)>HideDistance ;Just making sure that 173 is far away enough to spawn him to this room

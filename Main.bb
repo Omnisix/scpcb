@@ -1689,12 +1689,19 @@ Function UpdateConsole()
 						StrTemp$ = ""
 					EndIf
 					
-					If Int(StrTemp)>=0 And Int(StrTemp)<MAXACHIEVEMENTS
-						Achievements(Int(StrTemp))=True
-						CreateConsoleMsg("Achievemt "+AchievementStrings(Int(StrTemp))+" unlocked.")
-					Else
-						CreateConsoleMsg("Achievement with ID "+Int(StrTemp)+" doesn't exist.",255,150,0)
-					EndIf
+					i% = 0
+					Local searched% = Int(StrTemp)
+					For a.Achievements = Each Achievements
+						If i = searched%
+							a\Unlocked = True
+							CreateConsoleMsg("Achievemt "+a\LocalName+" unlocked.")
+							i = -1
+							Exit
+						EndIf
+						i = i + 1
+					Next
+
+					If i <> -1 Then CreateConsoleMsg("Achievement with ID "+searched+" doesn't exist.",255,150,0)
 					;[End Block]
 				Case "427state"
 					;[Block]
@@ -4232,20 +4239,19 @@ Function DrawEnding()
 					Next
 					
 					Local scpsEncountered=1
-					For i = Achv008 To Achv1499
-						scpsEncountered = scpsEncountered+Achievements(i)
-					Next
-					
-					Local achievementsUnlocked =0
-					For i = 0 To MAXACHIEVEMENTS-1
-						achievementsUnlocked = achievementsUnlocked + Achievements(i)
+					Local achievementsUnlocked=0
+					For a.Achievements = Each Achievements
+						If a\Unlocked Then
+							achievementsUnlocked = achievementsUnlocked + 1
+							If a\IsSCP Then scpsEncountered = scpsEncountered + 1
+						EndIf
 					Next
 					
 					Text x, y, I_Loc\Menu_EndEnding+" " + Upper(SelectedEnding)
 					Text x, y+20*MenuScale, I_Loc\Menu_EndTime+" " + FormatDuration(PlayTime, SpeedRunMode)
 					Text x, y+40*MenuScale, GetSeedString()
 					Text x, y+60*MenuScale, I_Loc\Menu_EndScps+" " + scpsEncountered
-					Text x, y+80*MenuScale, I_Loc\Menu_EndAchv+" " + achievementsUnlocked+"/"+(MAXACHIEVEMENTS)
+					Text x, y+80*MenuScale, I_Loc\Menu_EndAchv+" " + achievementsUnlocked+"/"+(AchievementCount)
 					Text x, y+100*MenuScale, I_Loc\Menu_EndRooms+" " + roomsfound+"/"+roomamount
 					Text x, y+120*MenuScale, I_Loc\Menu_EndDocs+" " +docsfound+"/"+docamount
 					Text x, y+140*MenuScale, I_Loc\Menu_End914+" " +RefinedItems			
@@ -8179,7 +8185,7 @@ Function DrawMenu()
 			
 			If AchievementsMenu>0 Then
 				;DebugLog AchievementsMenu
-				If AchievementsMenu <= Floor(Float(MAXACHIEVEMENTS-1)/12.0) Then 
+				If AchievementsMenu <= Floor(Float(AchievementCount-1)/12.0) Then 
 					If DrawButton(x+341*MenuScale, y + 344*MenuScale, 50*MenuScale, 60*MenuScale, ">") Then
 						AchievementsMenu = AchievementsMenu+1
 					EndIf
@@ -8190,20 +8196,29 @@ Function DrawMenu()
 					EndIf
 				EndIf
 				
+				Local a.Achievements = First Achievements
+				For i=1 To (AchievementsMenu-1)*12
+					a = After a
+				Next
+				Local startAchv.Achievements = a
+
 				For i=0 To 11
-					If i+((AchievementsMenu-1)*12)<MAXACHIEVEMENTS Then
-						DrawAchvIMG(AchvXIMG,y+((i/4)*120*MenuScale),i+((AchievementsMenu-1)*12))
+					If a <> Null Then
+						DrawAchvIMG(AchvXIMG+((i Mod 4)*SeparationConst),y+((i/4)*120*MenuScale),a)
+						a = After a
 					Else
 						Exit
 					EndIf
 				Next
 				
+				a = startAchv
 				For i=0 To 11
-					If i+((AchievementsMenu-1)*12)<MAXACHIEVEMENTS Then
+					If a <> Null Then
 						If MouseOn(AchvXIMG+((i Mod 4)*SeparationConst),y+((i/4)*120*MenuScale),64*scale,64*scale) Then
-							AchievementTooltip(i+((AchievementsMenu-1)*12))
+							AchievementTooltip(a)
 							Exit
 						EndIf
+						a = After a
 					Else
 						Exit
 					EndIf
@@ -9359,8 +9374,8 @@ Function NullGame(playbuttonsfx%=True)
 		Delete s
 	Next
 	
-	For i = 0 To MAXACHIEVEMENTS-1
-		Achievements(i)=0
+	For a.Achievements = Each Achievements
+		a\Unlocked = False
 	Next
 	RefinedItems = 0
 	
@@ -10276,29 +10291,27 @@ Function Use914(item.Items, setting$, x#, y#, z#)
 							End Select
 						Case "key5"	
 							Local CurrAchvAmount%=0
-							For i = 0 To MAXACHIEVEMENTS-1
-								If Achievements(i)=True
-									CurrAchvAmount=CurrAchvAmount+1
-								EndIf
+							For a.Achievements = Each Achievements
+								CurrAchvAmount=CurrAchvAmount+a\Unlocked
 							Next
 							
 							DebugLog CurrAchvAmount
 							
 							Select SelectedDifficulty\otherFactors
 								Case EASY
-									If GuaranteedOmni Lor Rand(0,((MAXACHIEVEMENTS-1)*3)-((CurrAchvAmount-1)*3))=0
+									If GuaranteedOmni Lor Rand(0,((AchievementCount-1)*3)-((CurrAchvAmount-1)*3))=0
 										it2 = CreateItem("key6", x, y, z)
 									Else
 										it2 = CreateItem("mastercard", x, y, z)
 									EndIf
 								Case NORMAL
-									If GuaranteedOmni Lor Rand(0,((MAXACHIEVEMENTS-1)*4)-((CurrAchvAmount-1)*3))=0
+									If GuaranteedOmni Lor Rand(0,((AchievementCount-1)*4)-((CurrAchvAmount-1)*3))=0
 										it2 = CreateItem("key6", x, y, z)
 									Else
 										it2 = CreateItem("mastercard", x, y, z)
 									EndIf
 								Case HARD
-									If GuaranteedOmni Lor Rand(0,((MAXACHIEVEMENTS-1)*5)-((CurrAchvAmount-1)*3))=0
+									If GuaranteedOmni Lor Rand(0,((AchievementCount-1)*5)-((CurrAchvAmount-1)*3))=0
 										it2 = CreateItem("key6", x, y, z)
 									Else
 										it2 = CreateItem("mastercard", x, y, z)
@@ -10307,29 +10320,27 @@ Function Use914(item.Items, setting$, x#, y#, z#)
 					End Select
 				Case "very fine"
 					CurrAchvAmount%=0
-					For i = 0 To MAXACHIEVEMENTS-1
-						If Achievements(i)=True
-							CurrAchvAmount=CurrAchvAmount+1
-						EndIf
+					For a.Achievements = Each Achievements
+						CurrAchvAmount=CurrAchvAmount+a\Unlocked
 					Next
 					
 					DebugLog CurrAchvAmount
 					
 					Select SelectedDifficulty\otherFactors
 						Case EASY
-							If GuaranteedOmni Lor Rand(0,((MAXACHIEVEMENTS-1)*3)-((CurrAchvAmount-1)*3))=0
+							If GuaranteedOmni Lor Rand(0,((AchievementCount-1)*3)-((CurrAchvAmount-1)*3))=0
 								it2 = CreateItem("key6", x, y, z)
 							Else
 								it2 = CreateItem("mastercard", x, y, z)
 							EndIf
 						Case NORMAL
-							If GuaranteedOmni Lor Rand(0,((MAXACHIEVEMENTS-1)*4)-((CurrAchvAmount-1)*3))=0
+							If GuaranteedOmni Lor Rand(0,((AchievementCount-1)*4)-((CurrAchvAmount-1)*3))=0
 								it2 = CreateItem("key6", x, y, z)
 							Else
 								it2 = CreateItem("mastercard", x, y, z)
 							EndIf
 						Case HARD
-							If GuaranteedOmni Lor Rand(0,((MAXACHIEVEMENTS-1)*5)-((CurrAchvAmount-1)*3))=0
+							If GuaranteedOmni Lor Rand(0,((AchievementCount-1)*5)-((CurrAchvAmount-1)*3))=0
 								it2 = CreateItem("key6", x, y, z)
 							Else
 								it2 = CreateItem("mastercard", x, y, z)
