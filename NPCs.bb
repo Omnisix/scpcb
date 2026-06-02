@@ -2012,9 +2012,7 @@ Function UpdateNPCs()
 						Case 4 ;Standing on catwalk in room4
 							;[Block]
 							If dist < 8.0 Then
-								AnimateNPC(n, 18, 19, 0.05)
-								
-								;Animate2(n\obj, AnimTime(n\obj), 18, 19, 0.05)
+								SetNPCFrame(n, 18)
 								PointEntity n\obj, Collider	
 								RotateEntity n\Collider, 0, CurveAngle(EntityYaw(n\obj), EntityYaw(n\Collider), 45.0), 0
 								
