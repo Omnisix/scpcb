@@ -3482,7 +3482,7 @@ While IsRunning
 		
 		;[End block]
 		
-		If KeyHit(KEY_INV) And VomitTimer >= 0 And (Not UnableToMove) And (Not IsZombie) And (Not Using294) And KillTimer >= 0 And (Not MenuOpen) Then
+		If KeyHit(KEY_INV) And VomitTimer >= 0 And (Not UnableToMove) And (Not IsZombie) And (Not Using294) And KillTimer >= 0 And (Not MenuOpen) And (Not ConsoleOpen) Then
 			Local W$ = ""
 			Local V# = 0
 			If SelectedItem<>Null
@@ -3498,7 +3498,7 @@ While IsRunning
 			EndIf
 		EndIf
 		
-		If KeyHit(KEY_SAVE) Then
+		If KeyHit(KEY_SAVE) And (Not ConsoleOpen) Then
 			If SelectedDifficulty\saveType = SAVEANYWHERE Then
 				RN$ = PlayerRoom\RoomTemplate\Name$
 				If RN$ = "173" Or (RN$ = "exit1" And EntityY(Collider)>1040.0*RoomScale) Or RN$ = "gatea"
