@@ -3146,6 +3146,14 @@ While IsRunning
 	Cls
 	
 	CurTime = MilliSecs()
+	If Framelimit > 0 Then
+	    ;Framelimit
+		Local WaitingTime% = (1000.0 / Framelimit) - (MilliSecs() - LoopDelay)
+		Delay WaitingTime% - 1
+		
+		LoopDelay = MilliSecs()
+		CurTime = LoopDelay
+	EndIf
 
 	Local ElapsedTime% = CurTime - PrevTime
 	PrevTime = CurTime
@@ -3156,19 +3164,11 @@ While IsRunning
 
 	If IsPaused() Then FPSfactor = 0
 	
-	If Framelimit > 0 Then
-	    ;Framelimit
-		Local WaitingTime% = (1000.0 / Framelimit) - (MilliSecs() - LoopDelay)
-		Delay WaitingTime%
-		
-		LoopDelay = MilliSecs()
-	EndIf
-	
 	;Counting the fps
-	If CheckFPS < MilliSecs() Then
+	If CheckFPS < CurTime Then
 		FPS = ElapsedLoops
 		ElapsedLoops = 0
-		CheckFPS = MilliSecs()+1000
+		CheckFPS = CurTime+1000
 	EndIf
 	ElapsedLoops = ElapsedLoops + 1
 	
@@ -3176,8 +3176,8 @@ While IsRunning
 		DoubleClick = False
 		MouseHit1 = MouseHit(1)
 		If MouseHit1 Then
-			If MilliSecs() - LastMouseHit1 < 800 And Abs(MouseX() - LastMouseHit1X) < 4 And Abs(MouseY() - LastMouseHit1Y) < 4 Then DoubleClick = True
-			LastMouseHit1 = MilliSecs()
+			If CurTime - LastMouseHit1 < 800 And Abs(MouseX() - LastMouseHit1X) < 4 And Abs(MouseY() - LastMouseHit1Y) < 4 Then DoubleClick = True
+			LastMouseHit1 = CurTime
 			LastMouseHit1X = MouseX()
 			LastMouseHit1Y = MouseY()
 		EndIf
