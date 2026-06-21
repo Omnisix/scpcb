@@ -769,7 +769,7 @@ Function UpdateConsole()
 						Case "gamma"
 							CreateConsoleMsg("HELP - gamma")
 							CreateConsoleMsg("******************************")
-							CreateConsoleMsg("Sets the gamma correction.")
+							CreateConsoleMsg("Sets the screen gamma.")
 							CreateConsoleMsg("Should be set to a value between 0.0 and 2.0.")
 							CreateConsoleMsg("Default is 1.0.")
 							CreateConsoleMsg("******************************")
