@@ -8179,11 +8179,9 @@ Function DrawMenu()
 				MouseHit1 = False
 			EndIf
 		Else
+			Local backPressed% = False			
 			If DrawButton(x+101*MenuScale, y + 344*MenuScale, 230*MenuScale, 60*MenuScale, I_Loc\Menu_Back) Then
-				AchievementsMenu = 0
-				OptionsMenu = 0
-				QuitMSG = 0
-				MouseHit1 = False
+				backPressed = True
 			EndIf
 			
 			If AchievementsMenu>0 Then
@@ -8232,7 +8230,7 @@ Function DrawMenu()
 		
 		y = y+10
 		
-		If AchievementsMenu<=0 And OptionsMenu<=0 And QuitMSG<=0 Then
+		If AchievementsMenu<=0 And OptionsMenu<=0 And QuitMSG<=0 And EndingTimer >= 0 Then
 			If KillTimer >= 0 Then	
 				
 				y = y+ 72*MenuScale
@@ -8367,6 +8365,13 @@ Function DrawMenu()
 			
 			SetFont Font1
 			If KillTimer < 0 Then RowText(DeathMSG$, x, y + 80*MenuScale, 390*MenuScale, 600*MenuScale)
+		EndIf
+
+		If backPressed Then
+			AchievementsMenu = 0
+			OptionsMenu = 0
+			QuitMSG = 0
+			MouseHit1 = False
 		EndIf
 		
 		If Fullscreen Then DrawImage CursorIMG, ScaledMouseX(),ScaledMouseY()
