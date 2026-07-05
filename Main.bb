@@ -868,7 +868,7 @@ Function UpdateConsole()
 							CreateConsoleMsg("HELP - playmusic")
 							CreateConsoleMsg("******************************")
 							CreateConsoleMsg("Will play tracks in .ogg/.wav format")
-							CreateConsoleMsg("from "+Chr(34)+"SFX\Music\Custom\"+Chr(34)+".")
+							CreateConsoleMsg("from "+Chr(34)+"SFX\Radio\UserTracks\"+Chr(34)+".")
 							CreateConsoleMsg("******************************")
 						Case "setblinkeffect", "blinkeffect"
 							CreateConsoleMsg("HELP - blinkeffect")
@@ -1555,7 +1555,7 @@ Function UpdateConsole()
 						PlayCustomMusic% = True
 						If CustomMusic <> 0 Then FreeSound_Strict CustomMusic : CustomMusic = 0
 						If MusicCHN <> 0 Then StopChannel MusicCHN
-						CustomMusic = LoadSound_Strict("SFX\Music\Custom\"+StrTemp$)
+						CustomMusic = LoadSound_Strict("SFX\Radio\UserTracks\"+StrTemp$)
 						If CustomMusic = 0
 							PlayCustomMusic% = False
 						EndIf
