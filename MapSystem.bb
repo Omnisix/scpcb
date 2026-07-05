@@ -7958,10 +7958,10 @@ Function load_terrain(hmap,yscale#=0.7,t1%,t2%,mask%)
 			RGB1 = ReadPixelFast(Min(lx, x-1), y - Min(ly, y-1), HeightMapBuffer)
 			r = (RGB1 And $FF0000) Shr 16
 			
-			Local alpha# = ((ReadPixelFast(Max(maskX-5,5), Max(maskY-5,5), MaskBuffer) And $FF000000) Shr 24) / 255.0
-			alpha = alpha + ((ReadPixelFast(Min(maskX+5, maskW-5), Min(maskY+5, maskH-5), MaskBuffer) And $FF000000) Shr 24) / 255.0
-			alpha = alpha + ((ReadPixelFast(Max(maskX-5,5), Min(maskY+5, maskH-5), MaskBuffer) And $FF000000) Shr 24) / 255.0
-			alpha = alpha + ((ReadPixelFast(Min(maskX+5, maskW-5), Max(maskY-5,5), MaskBuffer) And $FF000000) Shr 24) / 255.0
+			Local alpha# = ((ReadPixelFast(Clamp(maskX-5,0,maskW-1), Clamp(maskY-5,0,maskH-1), MaskBuffer) And $FF000000) Shr 24) / 255.0
+			alpha = alpha + ((ReadPixelFast(Clamp(maskX+5,0,maskW-1), Clamp(maskY+5,0,maskH-1), MaskBuffer) And $FF000000) Shr 24) / 255.0
+			alpha = alpha + ((ReadPixelFast(Clamp(maskX-5,0,maskW-1), Clamp(maskY+5,0,maskH-1), MaskBuffer) And $FF000000) Shr 24) / 255.0
+			alpha = alpha + ((ReadPixelFast(Clamp(maskX+5,0,maskW-1), Clamp(maskY-5,0,maskH-1), MaskBuffer) And $FF000000) Shr 24) / 255.0
 			alpha = alpha * 0.25
 			alpha = Sqr(alpha)
 			If alpha > 1.0 Then alpha = 1.0
