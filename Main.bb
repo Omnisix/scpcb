@@ -459,7 +459,7 @@ Dim RadioCHN%(8)
 Dim OldAiPics%(5)
 
 Global SpeedRunMode% = GetOptionInt("general", "speed run mode")
-Global PlayTime%
+Global PlayTime%, DeathTime%
 ; 0 = Running; 1 = Stopped; 2 = Pre-made save loaded; 3 = Ending reached
 Global TimerStopped% = True
 Global PreMadeSaveLoaded% = False
@@ -4118,6 +4118,7 @@ Function Kill()
 		PositionEntity(Head, EntityX(Camera, True), EntityY(Camera, True), EntityZ(Camera, True), True)
 		ResetEntity (Head)
 		RotateEntity(Head, 0, EntityYaw(Camera), 0)		
+		DeathTime = PlayTime
 	EndIf
 End Function
 
@@ -7737,6 +7738,7 @@ Function DrawMenu()
 			Text x, y, I_Loc\Menu_Difficulty+" "+SelectedDifficulty\localName
 			Text x, y+20*MenuScale, I_Loc\Menu_Save+" "+CurrSave
 			Text x, y+40*MenuScale, GetSeedString()
+			Text x, y+60*MenuScale, I_Loc\Menu_EndTime+" " + FormatDuration(DeathTime, SpeedRunMode)
 		ElseIf AchievementsMenu <= 0 And OptionsMenu > 0 And QuitMSG <= 0 And KillTimer >= 0
 			If DrawButton(x + 101 * MenuScale, y + 390 * MenuScale, 230 * MenuScale, 60 * MenuScale, I_Loc\Menu_Back) Then
 				AchievementsMenu = 0
