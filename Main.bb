@@ -9567,6 +9567,7 @@ Function PlaySound2%(SoundHandle%, cam%, entity%, range# = 10, volume# = 1.0, us
 		s\Volume = volume
 		s\UseSFXVolume = useSFXVolume
 		UpdateFireAndForgetSounds(s)
+		soundchn = s\Chn
 	EndIf
 	
 	Return soundchn
