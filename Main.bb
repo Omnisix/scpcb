@@ -2316,7 +2316,7 @@ Function CreateDoor.Doors(lvl, x#, y#, z#, angle#, room.Rooms, dopen% = False,  
 	
 	EntityPickMode d\frameobj,2
 	
-	If d\open And big = False And Rand(8) = 1 Then d\AutoClose = True
+	If Rand(8) = 1 And d\open And big = False Then d\AutoClose = True
 	d\dir=big
 	d\room=room
 	
@@ -11849,22 +11849,29 @@ Function Graphics3DExt%(width%,height%,depth%=32,mode%=2)
 	;TextureAnisotropy% (GetOptionInt("graphics","anisotropy"),-1)
 End Function
 
-Function ResizeImage2(image%,width%,height%)
-    img% = CreateImage(width,height)
-	
-	oldWidth% = ImageWidth(image)
-	oldHeight% = ImageHeight(image)
-	CopyRect 0,0,oldWidth,oldHeight,1024-oldWidth/2,1024-oldHeight/2,ImageBuffer(image),TextureBuffer(fresize_texture)
-	SetBuffer BackBuffer()
-	ScaleRender(0,0,2048.0 / Float(RealGraphicWidth) * Float(width) / Float(oldWidth), 2048.0 / Float(RealGraphicWidth) * Float(height) / Float(oldHeight))
-	;might want to replace Float(GraphicWidth) with Max(GraphicWidth,GraphicHeight) if portrait sizes cause issues
-	;everyone uses landscape so it's probably a non-issue
-	CopyRect RealGraphicWidth/2-width/2,RealGraphicHeight/2-height/2,width,height,0,0,BackBuffer(),ImageBuffer(img)
-	
-    FreeImage image
-    Return img
+Function ResizeImage2(image%, width%, height%)
+    Local img%
+    #if_ (_B3XD == 1)
+        img = CreateImage(width, height)
+        Local oldWidth% = ImageWidth(image)
+        Local oldHeight% = ImageHeight(image)
+        CopyRectStretch 0, 0, oldWidth, oldHeight, 0, 0, width, height, ImageBuffer(image), ImageBuffer(img)
+        FreeImage image
+        Return img
+    #else_
+        img = CreateImage(width, height)
+        oldWidth = ImageWidth(image)
+        oldHeight = ImageHeight(image)
+        CopyRect 0, 0, oldWidth, oldHeight, 1024 - oldWidth / 2, 1024 - oldHeight / 2, ImageBuffer(image), TextureBuffer(fresize_texture)
+        SetBuffer BackBuffer()
+        ScaleRender(0, 0, 2048.0 / Float(RealGraphicWidth) * Float(width) / Float(oldWidth), 2048.0 / Float(RealGraphicWidth) * Float(height) / Float(oldHeight))
+        ; might want to replace Float(GraphicWidth) with Max(GraphicWidth,GraphicHeight) if portrait sizes cause issues
+        ; everyone uses landscape so it's probably a non-issue
+        CopyRect RealGraphicWidth / 2 - width / 2, RealGraphicHeight / 2 - height / 2, width, height, 0, 0, BackBuffer(), ImageBuffer(img)
+        FreeImage image
+        Return img
+    #endif_
 End Function
-
 
 Function RenderWorld2()
 	CatchErrors("Uncaught (RenderWorld2)")
