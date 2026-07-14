@@ -7741,7 +7741,7 @@ Function DrawMenu()
 			Text x, y, I_Loc\Menu_Difficulty+" "+SelectedDifficulty\localName
 			Text x, y+20*MenuScale, I_Loc\Menu_Save+" "+CurrSave
 			Text x, y+40*MenuScale, GetSeedString()
-			Text x, y+60*MenuScale, I_Loc\Menu_EndTime+" " + FormatDuration(DeathTime, SpeedRunMode)
+			If DeathTime >= 0 Then Text x, y+60*MenuScale, I_Loc\Menu_EndTime+" " + FormatDuration(DeathTime, SpeedRunMode)
 		ElseIf AchievementsMenu <= 0 And OptionsMenu > 0 And QuitMSG <= 0 And KillTimer >= 0
 			If DrawButton(x + 101 * MenuScale, y + 390 * MenuScale, 230 * MenuScale, 60 * MenuScale, I_Loc\Menu_Back) Then
 				AchievementsMenu = 0
