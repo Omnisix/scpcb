@@ -4873,17 +4873,26 @@ Function MouseLook()
 		;RotateEntity Collider, EntityPitch(Collider), EntityYaw(Collider), 0
 		;moveentity player, side, up, 0	
 		; -- Update the smoothing que To smooth the movement of the mouse.
-		mouse_x_speed_1# = CurveValue(MouseXSpeed() * (MouseSens + 0.6) , mouse_x_speed_1, (6.0 / (MouseSens + 1.0))*MouseSmooth) 
-		If IsNaN(mouse_x_speed_1) Then mouse_x_speed_1 = 0
-		If InvertMouse Then
-			mouse_y_speed_1# = CurveValue(-MouseYSpeed() * (MouseSens + 0.6), mouse_y_speed_1, (6.0/(MouseSens+1.0))*MouseSmooth) 
+		Local rawX# = MouseXSpeed() * (MouseSens + 0.6)
+		Local rawY# = MouseYSpeed() * (MouseSens + 0.6)
+		Local S# = (6.0 / (MouseSens + 1.0)) * MouseSmooth
+		Local tau# = S / 70.0
+
+		If MouseSmooth <= 0 Then
+			mouse_x_speed_1# = rawX
+			mouse_y_speed_1# = rawY
 		Else
-			mouse_y_speed_1# = CurveValue(MouseYSpeed () * (MouseSens + 0.6), mouse_y_speed_1, (6.0/(MouseSens+1.0))*MouseSmooth) 
+			mouse_x_speed_1# = SmoothMouseValue(rawX, mouse_x_speed_1, tau)
+			mouse_y_speed_1# = SmoothMouseValue(rawY, mouse_y_speed_1, tau)
 		EndIf
+
+		If IsNaN(mouse_x_speed_1) Then mouse_x_speed_1 = 0
 		If IsNaN(mouse_y_speed_1) Then mouse_y_speed_1 = 0
+
+		If InvertMouse Then mouse_y_speed_1 = -mouse_y_speed_1
 		
-		Local the_yaw# = ((mouse_x_speed_1#)) * mouselook_x_inc# / (1.0+WearingVest)
-		Local the_pitch# = ((mouse_y_speed_1#)) * mouselook_y_inc# / (1.0+WearingVest)
+		Local the_yaw# = mouse_x_speed_1 * mouselook_x_inc# / (1.0+WearingVest)
+		Local the_pitch# = mouse_y_speed_1 * mouselook_y_inc# / (1.0+WearingVest)
 		
 		TurnEntity Collider, 0.0, -the_yaw#, 0.0 ; Turn the user on the Y (yaw) axis.
 		user_camera_pitch# = user_camera_pitch# + the_pitch#
@@ -11296,8 +11305,12 @@ Function CurveAngle#(val#, old#, smooth#)
    Return WrapAngle(old + diff * (1.0 / smooth * FPSfactor))
 End Function
 
-
-
+Function SmoothMouseValue#(target#, current#, tau#)
+    If tau <= 0 Then Return target
+    Local dt# = FPSfactor / 70.0
+    Local alpha# = 1.0 - Exp(-dt / tau)
+    Return current + (target - current) * alpha
+End Function
 
 Function WrapAngle#(angle#)
 	If angle = INFINITY Then Return 0.0
