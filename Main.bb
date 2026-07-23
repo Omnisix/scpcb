@@ -6428,7 +6428,9 @@ Function DrawGUI()
 					;radiostate(6) = a timer for the "code channel"
 					;RadioState(7) = another timer for the "code channel"
 					
-					If RadioState(5) = 0 And SelectedItem\state > 0 And SelectedItem\itemtemplate\name <> "veryfineradio" Then 
+					If SelectedItem\itemtemplate\name = "veryfineradio" Then
+						SelectedItem\state2 = 66
+					ElseIf RadioState(5) = 0 And SelectedItem\state > 0
 						Msg = I_Loc\MessageItem_RadioUse
 						MsgTimer = 70 * 5
 						RadioState(5) = 1
