@@ -11852,7 +11852,7 @@ End Function
 
 Function ResizeImage2(image%, width%, height%)
     Local img%
-    #if_ (_B3XD == 1)
+    #ifdef _B3XD
         img = CreateImage(width, height)
         Local oldWidth% = ImageWidth(image)
         Local oldHeight% = ImageHeight(image)
